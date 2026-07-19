@@ -1,1 +1,72 @@
+🔑 設定你的 Google Cloud 服務帳戶金鑰（cyut-guide.json）
+本專案需要一個有效的 Google Cloud 服務帳戶 JSON 金鑰，才能使用 Gemini AI 與其他相關服務。請依照下列步驟取得並放置此檔案。
 
+1. 建立 Google Cloud 專案並啟用 API
+前往 Google Cloud Console。
+建立一個新的專案，或選擇現有專案。
+在「API 和服務」→「程式庫」中搜尋並啟用以下 API（至少需要）：
+Generative Language API (或 Vertex AI Gemini API)
+如果有使用 Cloud Speech-to-Text 或 Text-to-Speech，也請啟用對應的 API。
+2. 建立服務帳戶並下載金鑰
+在左側選單點選「IAM 與管理」→「服務帳戶」。
+點擊「建立服務帳戶」。
+輸入任意名稱，例如 cyut-ai-guide，然後點選「建立並繼續」。
+在角色部分，您可以給予「擁有者」或至少包含所需 API 的使用權限（如 AI Platform 開發人員 或 Generative Language API 使用者）。為安全起見，可只指派最低必要權限。
+建立完成後，點選該服務帳戶進入詳細頁面。
+切換到「金鑰」分頁，點選「新增金鑰」→「建立新的金鑰」。
+選擇 JSON 格式，系統會自動下載一個 JSON 檔案。
+3. 放置金鑰檔案
+將下載的 JSON 檔案重新命名為 cyut-guide.json。
+將 cyut-guide.json 放置到本專案的根目錄（與 app.py 同一層）。
+專案目錄結構應類似於：
+
+cyut-ai-guide/
+├── app.py
+├── cyut-guide.json   ← 放在這裡
+├── requirements.txt
+├── ...
+
+4. 確認檔案內容
+打開 cyut-guide.json，其格式應如下（範例，實際內容會完全不同）：
+
+{
+  "type": "service_account",
+  "project_id": "your-project-id",
+  "private_key_id": "your-key-id",
+  "private_key": "-----BEGIN PRIVATE KEY-----\n...完整私鑰...\n-----END PRIVATE KEY-----\n",
+  "client_email": "your-sa@your-project.iam.gserviceaccount.com",
+  "client_id": "1234567890",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/..."
+}
+
+⚠️ 請務必包含完整的 private_key，僅有 -----BEGIN PRIVATE KEY-----\n 是不夠的，必須包含整個私鑰內容及結尾的 -----END PRIVATE KEY-----。
+
+5. 安全注意事項
+千萬不要將 cyut-guide.json 上傳到公開的版本控制系統（如 GitHub）！
+該檔案已加入 .gitignore（請確認專案中的 .gitignore 包含 cyut-guide.json），確保不會被意外提交。
+若要在正式環境部署，建議改用環境變數（如 GOOGLE_APPLICATION_CREDENTIALS）指向金鑰檔案，而不是將金鑰直接放在專案目錄，但本地開發可直接使用此 JSON。
+6. 啟動後端
+完成上述設定後，即可執行 Flask 後端：
+
+python app.py
+
+程式將會自動讀取 cyut-guide.json 並使用它來驗證 Google Cloud API 的請求。
+
+補充說明（如果你希望使用者自訂金鑰路徑）
+假設 app.py 中是用 os.environ.get("GOOGLE_APPLICATION_CREDENTIALS") 或類似的變數來讀取，你可以加入一段說明：
+
+### 替代方式：透過環境變數設定金鑰路徑
+如果你不想將金鑰放在專案根目錄，可以設定環境變數：
+```bash
+export GOOGLE_APPLICATION_CREDENTIALS="/path/to/your/cyut-guide.json"
+
+然後啟動伺服器。此作法對部署至雲端環境尤其方便。
+
+但根據目前專案狀況，最簡單的方式還是直接將檔案命名為 `cyut-guide.json` 並放在根目錄，因為許多 Flask 應用程式會直接使用 `genai.Client.from_service_account_json('cyut-guide.json')` 之類的寫法。
+
+---
+
+這份說明涵蓋了取得金鑰的標準流程，並強調了安全性。你可以根據真實的程式碼實作方式（例如 `app.py` 內讀取金鑰的具體程式碼）再微調路徑或環境變數設定。如果還有其他相依 API 需要額外啟用，也可以一併列出
