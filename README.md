@@ -121,9 +121,9 @@
 
 ## 專案結構
 
-├── frontend-expo-router/ # 新版 Expo Router 前端 
-├── backend/ # Flask API + 建築資料庫 
-├── android/ # Android 原生設定 (需填入 API key) ，於android\app\src\main\AndroidManifest.xml 中設定自己的gemini_API<meta-data android:name="com.google.android.geo.API_KEY" android:value="YOUR_GOOGLE_MAPS_API_KEY"/>
+├── frontend-expo-router/ # 新版 Expo Router 前端\n
+├── backend/ # Flask API + 建築資料庫\n
+├── android/ # Android 原生設定 (需填入 API key) ，於android\app\src\main\AndroidManifest.xml 中設定自己的gemini_API<meta-data android:name="com.google.android.geo.API_KEY" android:value="YOUR_GOOGLE_MAPS_API_KEY"/>\n
 └── README.md
 
 ## 注意事項
